@@ -58,6 +58,7 @@
         "forward_list": "cpp",
         "tuple": "cpp",
         "utility": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "thread": "cpp"
     }
 }

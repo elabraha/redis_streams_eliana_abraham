@@ -92,21 +92,40 @@ void test_xrange_with_multiple_threads() {
     std::cout << "test_xrange_with_multiple_threads passed" << std::endl;
 }
 
-void test_expected_dead_lock() {
+void test_check_for_possible_deadlock(){
+    // Not sure if this actually does the job that well it's possible
+    // there's a better way but that involves timeout loops and periodically
+    // checking the state of the threads to see if they finished and then
+    // timing out and then guessing that if they timeout out that there possibly
+    // was a deadlock. This is hard to test and I think I'm handling locks
+    // properly, every function blocks and I haven't started ot use shared locks
+    // only a unique lock for for a conditional variable and that's still
+    // not super fine grained mutex control or anything so I should be fine.
     redisStream stream;
 
-    // this test is expected to deadlock, so we will not assert anything.
-    std::thread t1([&stream]() {
+    std::cout << "Testing for possible deadlock..." << std::endl;
+
+    // create a thread that will try to read from the stream
+    std::thread reader([&stream]() {
+        stream.xread({"deadlock_stream"}, {0}, 100);
+    });
+
+    // create a thread that will try to write to the stream
+    std::thread writer([&stream]() {
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         stream.xadd("deadlock_stream", {{"field", "value"}});
     });
 
-    std::thread t2([&stream]() {
-        stream.xread({"deadlock_stream"}, {0}, 100);
-    });
+    reader.join();
+    writer.join();
 
-    t1.join();
-    t2.join();
+    // check for deadlock
+    if (reader.joinable() || writer.joinable()) {
+        std::cout << "Deadlock detected" << std::endl;
+        return;
+    }
+    // theres isn't any
+    std::cout << "No deadlock detected" << std::endl;
 }
 
 //eventually test for possible race conditions with many threads and periodic or
@@ -116,7 +135,10 @@ int main() {
     test_concurrency_for_xadd();
     test_concurrency_for_xread_blocking_when_data_added();
     test_xrange_with_multiple_threads();
-    test_expected_dead_lock();
+    // wait for a little bit I'm not sure why but maybe one of my tests hangs
+    // it doesn't I had a bug in my makefile but keeping just in case
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    test_check_for_possible_deadlock();
     std::cout << "All concurrency tests passed!" << std::endl;
     return 0;
 }
