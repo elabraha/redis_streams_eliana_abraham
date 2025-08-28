@@ -29,6 +29,8 @@ Only the basic ones in the docs for streams are implemented and not full feature
 - my first implementation of the interface was terrible, the new one is better but such a waist of time I just should have had the tests and that's it but I felt like it was important that one could play around with this and do things I didn't really test for.
 - There are probably some security or bug related issues I didn't pay attention to as well.
 - My interfaces is probably the worst way to interface with this as just regular input with no ease of use features normal CLIs have. This is garbage but I didn't want to overcomplicated it.
+- These unit tests are very very simple and there's probably so many bugs I'm missing but again time constraints I started to run out of time to do this. I want to try testing with a lot more data and check for mor individual weird bugs.
+- I also don't test the interface which I should absolutely do.
 - And lastly my tests are terrible, it's been a while since I tested so barebones like this especially with threads that I don't know how effective this is, I tried. The simulated concurrent calls tests definitely don't replicate the many concurrent calls to a server you might have and so I don't reach resource constraints or issues with locks or anything. I only have one simple test that if my code didn't lock resources would deadlock, hopefully, but it doesn't so I guess we're good.
 
 ## Future Hardening/Productionizing Things You Should Probably Do Maybe:
@@ -38,5 +40,6 @@ Only the basic ones in the docs for streams are implemented and not full feature
 - I don't think I have any dangling pointers or memory leaks anywhere but I forgot about implementing anything for the constructor and destructor.
 - So there's probably a much better way to implement an index sorted hash for this purpose and many people have done different things to solve this. Radix trees that Redis uses is one way but most I think use LSM trees but I literally just learned how they work in more detail the other day so I don't think I'll be implementing that in a day.
 - Also if I implemented the networking part along with the client and the protocol I would have had to deal with concurrent I/O and Redis does this with event loops. I probably would have gone with an async I/O library like on from Boost or an event loop library like libenv for tried and true tested implementations. However I think for a little project like this that someone wants to learn from using your OS' own basic I/O multiplexer. There's universal POSIX compliant ones that are fine.
+- make a better client or interface and actually test it.
 
 Maybe there's more but this is what I've got.
