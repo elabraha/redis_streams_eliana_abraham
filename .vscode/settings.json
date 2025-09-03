@@ -59,6 +59,8 @@
         "tuple": "cpp",
         "utility": "cpp",
         "climits": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "iomanip": "cpp",
+        "cassert": "cpp"
     }
 }

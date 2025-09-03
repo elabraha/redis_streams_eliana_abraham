@@ -249,15 +249,19 @@ void test_xtrim_maxlen() {
     stream.xadd("mystream", data);
     stream.xadd("mystream", data);
 
+    // I forgot to check that the correct entry was removed
     size_t trimmed = stream.xtrim("mystream", MAXLEN, 1);
     assert(trimmed == 1); // check one entry is trimmed
     assert(stream.xlen("mystream") == 1); // check stream length is correct
+    // assert that only the latest entry was removed
+    assert(stream.xrange("mystream", 0, LLONG_MAX)[0].first == 0);
     // check threshold for MAXLEN > stream data length
     // this is supposedly how that's supposed to work according to the docs I
     // read so if that's not consistant with the actual redis I was just
     // following the docs.
     trimmed = stream.xtrim("mystream", MAXLEN, 5);
     assert(trimmed == 0); // check no entries are trimmed
+
     std::cout << "test_xtrim_maxlen passed" << std::endl;
 }
 
@@ -277,6 +281,19 @@ void test_xtrim_minid() {
     // min < smallest id
     trimmed = stream.xtrim("mystream", MINID, -1);
     assert(trimmed == 0); // check no entries are trimmed
+}
+
+void test_xtrim_minid_trim_up_to(){
+    redisStream stream;
+    FieldsStructure data = {{"field1", "value1"}, {"field2", "value2"}};
+    stream.xadd("mystream", data);
+    stream.xadd("mystream", data);
+
+    size_t trimmed = stream.xtrim("mystream", MINID, 0);
+    assert(trimmed == 1); // check all entries are trimmed
+    assert(stream.xlen("mystream") == 1); // check stream is empty
+    // check id is correct should be only the last one left
+    assert(stream.xrange("mystream", 0, -1)[0].first == 1);
 }
 
 int main() {

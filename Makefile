@@ -8,9 +8,9 @@ thread_sanitizer:
 # regular make with just the interface
 interface: 
 	g++ -std=c++17 -Wall -Wextra -pthread -o redis_stream interface.cpp stream.cpp
-run: interface
+run: clean interface
 	./redis_stream
-run_all_tests: test concurrency_test
+run_all_tests: clean test concurrency_test
 	./regular_tests
 	./concurrency_test
 clean:

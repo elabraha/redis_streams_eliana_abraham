@@ -101,6 +101,9 @@ void test_check_for_possible_deadlock(){
     // properly, every function blocks and I haven't started ot use shared locks
     // only a unique lock for for a conditional variable and that's still
     // not super fine grained mutex control or anything so I should be fine.
+    // The thing is you don't really unit test in anticipation of finding
+    // deadlocks you stress test and run randomized tests as well as deadlock
+    //detector algorithms that exist
     redisStream stream;
 
     std::cout << "Testing for possible deadlock..." << std::endl;
