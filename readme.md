@@ -6,7 +6,7 @@ I would suggest using the codespace I have created because I'm nervous about run
 
 You can do that by clicking where you would normally clone a repo and then going over to the codespaces tab.
 
-Click the codespace I've already created `ubiquitous space giggle`.
+Click the codespace I've already created ~`ubiquitous space giggle`~ I had to make another one I don't know why it doesn't update `legendary memory`.
 
 If you need to clear before hand run
 `make clean`
